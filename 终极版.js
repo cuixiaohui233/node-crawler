@@ -13,8 +13,13 @@ function setUrl(i) {
     superagent.post('http://www.bidizhaobiao.com/advsearch/retrieval_list.do')
         .type('form')
         .set({
+            'Connection':'keep-alive',
+            'Content-Type':'application/x-www-form-urlencoded',
             'Referer':'http://www.bidizhaobiao.com/advsearch/retrieval_list.do',
-            'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
+            'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Origin':'http://www.bidizhaobiao.com',
+            'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
+            'Cookie': 'UM_distinctid=163b4304eeb180-071ce37af0321b-336e7707-1fa400-163b4304eed86; _ga=GA1.2.1770130625.1527758383; Hm_lvt_961d7fb68be6633c1c72ca3c95acd601=1527757844,1527758383,1527758388,1527758526; JSESSIONID=7557B9DCA72ADA20E4FDF03754309A76; _gid=GA1.2.707751905.1528076042; letter=gd; SessionId=7557B9DCA72ADA20E4FDF03754309A76; tp=1; CNZZDATA1262180001=1406415779-1527733081-null%7C1528076987; Hm_lpvt_961d7fb68be6633c1c72ca3c95acd601=1528078034'
         })
         .send({
             pictureId: 'B00208',
@@ -45,9 +50,10 @@ function setUrl(i) {
                     .set({
                         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                         'Cache-Control': {'max-age': 0},
-                        'Cookie': '_ga=GA1.2.2038925468.1527781640; UM_distinctid=163b72c7dfaf0-079683703323a1-4441082e-100200-163b72c7dff527; _gid=GA1.2.1429068574.1528024560; Hm_lvt_961d7fb68be6633c1c72ca3c95acd601=1527781641,1528024560; JSESSIONID=FB80A210CCD2977A44649181F1293380; SessionId=FB80A210CCD2977A44649181F1293380; CNZZDATA1262180001=1757714797-1527786196-http%253A%252F%252Fwww.bidizhaobiao.com%252F%7C1528021526; letter=gd; tp=1; Hm_lpvt_961d7fb68be6633c1c72ca3c95acd601=1528024805',
+                        'Cookie': 'UM_distinctid=163b4304eeb180-071ce37af0321b-336e7707-1fa400-163b4304eed86; _ga=GA1.2.1770130625.1527758383; Hm_lvt_961d7fb68be6633c1c72ca3c95acd601=1527757844,1527758383,1527758388,1527758526; JSESSIONID=7557B9DCA72ADA20E4FDF03754309A76; _gid=GA1.2.707751905.1528076042; _gat=1; CNZZDATA1262180001=1406415779-1527733081-null%7C1528071565; letter=gd; SessionId=7557B9DCA72ADA20E4FDF03754309A76; tp=1; Hm_lpvt_961d7fb68be6633c1c72ca3c95acd601=1528076077',
                         'userType': 02,
                         'Proxy-Connection':'keep-alive',
+                        'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
                         'dataObj': {
                             'loginId': '18611789702',
                             'password': 'lyp82nlf'
@@ -59,24 +65,23 @@ function setUrl(i) {
                             console.log("message info:"+JSON.stringify(mes));
                         }
                         if (mes) {
+                            console.log(mes.text);
                             var $ = cheerio.load(mes.text);
 
-                            // url = 'http://localhost:63342/crawler/' + url.split('/')[3];
                             var jsonData = [
                                 $('.content-title').text().trim(),
                                 $('.table-info tr').eq(1).children().last().text().replace(/\s+/g,""),
                                 $('.current a').eq(1).text().trim(),
                                 url,
-                                // mes.text
+                                mes.text
                             ];
                         }
-                        console.log(jsonData);
                         callback(null,jsonData);
 
                     })
             }, function (err, results) {
 
-                console.log(results);
+                // console.log(results);
                 // 写 excel 表格
                 var data = [
                     [
@@ -87,14 +92,14 @@ function setUrl(i) {
                     ]
                 ];
                 var excel = data.concat(results);
-                console.log(results);
-                // for(var i=0;i<results.length;i++) {
-                //     console.log('开始写html');
-                //     fs.writeFileSync(results[i][3].split('/')[3],results[4][4], {'flag': 'w'});
-                // }
+                for(var i=0;i<results.length;i++) {
+                    // console.log('开始写html');
+                    fs.writeFileSync(results[i][3].split('/')[3],results[4][4], {'flag': 'w'});
+                }
                 for(var i=0;i<excel.length;i++){
+                    // console.log(excel[i][3]);
                     excel[i][3] = 'http://localhost:63342/crawler/' + excel[i][3].split('/')[3];
-                    console.log(excel[i][3]);
+                    // console.log(excel[i][3]);
                 }
                 var buffer = xlsx.build([
                     {
@@ -103,7 +108,7 @@ function setUrl(i) {
                     }
                 ]);
 
-                fs.writeFileSync('test3.xlsx',buffer,{'flag':'w'});
+                fs.writeFileSync('test.xlsx',buffer,{'flag':'w'});
                 console.log('完成')
             })
         });
