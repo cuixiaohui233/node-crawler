@@ -9,7 +9,7 @@
 >可以说是贼简单了，但是搞了一晚上,其中的坑主要是请求表单的数据，需要在请求时设置type，代码片段：
 
     superagent.post('http://www.bidizhaobiao.com/advsearch/retrieval_list.do')
-      .type('form')// 这里需要设置 .type ,否则下面 .send 里面的参数不起作用
+      .type('form')// 这里需要设置 .type ,否则下面 .send 里面的参数不起作用，为什么呢，因为这个网站太老，传数据用 form
       .set({
           'Referer':'http://www.bidizhaobiao.com/advsearch/retrieval_list.do',
           'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
