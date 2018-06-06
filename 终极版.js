@@ -7,7 +7,8 @@ var app = express();
 var xlsx = require('node-xlsx');
 var fs = require('fs');
 
-setUrl(1);
+// 参数 i 为请求的页码数，包括开始也和结束页
+setUrl(5);
 var arr = [];
 function setUrl(i) {
     console.log('开始请求数据页码数据');
@@ -18,8 +19,8 @@ function setUrl(i) {
             'Referer':'http://www.bidizhaobiao.com/advsearch/retrieval_list.do',
             'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'Origin':'http://www.bidizhaobiao.com',
-            'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
-            'Cookie': 'UM_distinctid=163b4304eeb180-071ce37af0321b-336e7707-1fa400-163b4304eed86; _ga=GA1.2.1770130625.1527758383; _gid=GA1.2.707751905.1528076042; letter=gd; Hm_lvt_961d7fb68be6633c1c72ca3c95acd601=1527758383,1527758388,1527758526,1528092598; JSESSIONID=697207E15B6BC1AA570501F3F178C1A3; CNZZDATA1262180001=1406415779-1527733081-null%7C1528105661; SessionId=697207E15B6BC1AA570501F3F178C1A3; tp=1; _gat=1; Hm_lpvt_961d7fb68be6633c1c72ca3c95acd601=1528110608'
+            'User-Agent':'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36',
+            'Cookie': '_ga=GA1.2.1326986473.1528248034; _gid=GA1.2.652460414.1528248034; UM_distinctid=163d2ae627be5-084581a19de6a1-795a6001-100200-163d2ae627dd3; CNZZDATA1262180001=1910445224-1528244891-null%7C1528244891; Hm_lvt_961d7fb68be6633c1c72ca3c95acd601=1528248034; letter=gd; JSESSIONID=C9D1F51DFEC04082EBA917A235A0A6EA; SessionId=C9D1F51DFEC04082EBA917A235A0A6EA; _gat=1; Hm_lpvt_961d7fb68be6633c1c72ca3c95acd601=1528283085'
         })
         .send({
             pictureId: 'B00208',
@@ -38,26 +39,26 @@ function setUrl(i) {
                 console.log('存储单个网页信息');
                 arr.push(_url);
             });
-            if (i < 50){
+            if (i < 7){
                 i++;
                 setUrl(i);
                 return;
             }
             // 遍历 arr, 解析每个页面中需要的信息
             var jsonData = [];
-            async.mapLimit(arr, 3, function (url, callback) {
+            async.mapLimit(arr, 1, function (url, callback) {
                 console.log('开始请求单个页面的数据');
                 superagent
                     .get(url)
                     .set({
                         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                        'Cookie': 'UM_distinctid=163b4304eeb180-071ce37af0321b-336e7707-1fa400-163b4304eed86; _ga=GA1.2.1770130625.1527758383; _gid=GA1.2.707751905.1528076042; letter=gd; Hm_lvt_961d7fb68be6633c1c72ca3c95acd601=1527758383,1527758388,1527758526,1528092598; JSESSIONID=697207E15B6BC1AA570501F3F178C1A3; CNZZDATA1262180001=1406415779-1527733081-null%7C1528105661; SessionId=697207E15B6BC1AA570501F3F178C1A3; tp=1; Hm_lpvt_961d7fb68be6633c1c72ca3c95acd601=1528110804',
+                        'Cookie': '_ga=GA1.2.1326986473.1528248034; _gid=GA1.2.652460414.1528248034; UM_distinctid=163d2ae627be5-084581a19de6a1-795a6001-100200-163d2ae627dd3; CNZZDATA1262180001=1910445224-1528244891-null%7C1528244891; Hm_lvt_961d7fb68be6633c1c72ca3c95acd601=1528248034; letter=gd; JSESSIONID=8ECAD46C5B03390CFDF1C4DF1D373D2C; _gat=1; SessionId=8ECAD46C5B03390CFDF1C4DF1D373D2C; Hm_lpvt_961d7fb68be6633c1c72ca3c95acd601=1528283161',
                         'Referer': 'http://www.bidizhaobiao.com/gjjs/B00208.html',
                         'Proxy-Connection':'keep-alive',
-                        'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
+                        'User-Agent':'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36',
                         'dataObj': {
-                            'loginId': '13613183612',
-                            'password': 'lyp82nlf'
+                            'loginId': '15698035885',
+                            'password': 'xiangzu0606'
                         }
                     })
                     .end(function (err, mes) {
@@ -92,12 +93,12 @@ function setUrl(i) {
                         '链接'
                     ]
                 ];
-                // for(var i=0;i<results.length;i++) {
-                //     console.log('开始写html');
-                //     if(results[i]) {
-                //         fs.writeFileSync(results[i][3].split('/')[3],results[4][4], {'flag': 'w'});
-                //     }
-                // }
+                for(var i=0;i<results.length;i++) {
+                    console.log('开始写html');
+                    if(results[i]) {
+                        fs.writeFileSync(results[i][3].split('/')[3],results[i][4], {'flag': 'w'});
+                    }
+                }
                 for(var i=0;i<results.length;i++){
                     console.log('开始生成Excel数据');
                     if(results[i].length){
@@ -113,7 +114,7 @@ function setUrl(i) {
                     }
                 ]);
 
-                fs.writeFileSync('test.xlsx',buffer,{'flag':'w'});
+                fs.writeFileSync('test2.xlsx',buffer,{'flag':'w'});
                 console.log('所有操作完成');
             })
         });
@@ -122,7 +123,7 @@ function setUrl(i) {
 
 }
 
-var server = app.listen(3000, function (req, res) {
+var server = app.listen(3008, function (req, res) {
     console.log('server is running')
     var host = server.address().address;
 
